@@ -1,0 +1,30 @@
+package ${basePackage}.entity.${modelName};
+
+import java.io.Serializable;
+#set($temp = [])
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#if($temp.contains("$c.javaTypeName") == false && $StringUtil.contain("$c.javaTypeName","java.lang") == false)
+import $c.javaTypeName;
+#set($temp1 = $temp.add("$c.javaTypeName"))
+#end
+#end
+
+public class $entityName implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+	private ${c.javaTypeSimpleName} ${c.beanPropertyName};
+	
+#end
+
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+	public $c.javaTypeSimpleName get$StringUtil.capitalize("$c.beanPropertyName")() {
+		return $c.beanPropertyName;
+	}
+
+	public void set$StringUtil.capitalize("$c.beanPropertyName")($c.javaTypeSimpleName $c.beanPropertyName) {
+		this.$c.beanPropertyName = $c.beanPropertyName;
+	}
+#end
+}

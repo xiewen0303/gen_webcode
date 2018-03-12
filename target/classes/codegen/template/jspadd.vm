@@ -1,0 +1,64 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/WEB-INF/jsp/include/includes.jsp"%>
+<html>
+<head>
+#set ($lowCaseEntityName = $StringUtil.firstToLower($entityName) )
+
+<link type="text/css" rel="stylesheet" href="css/skin1/page.css" />
+<script type="text/javascript" src="component/jquery_plugin/jquery.validate.min.js"> </script>
+<script type="text/javascript" src="component/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+$().ready(function() {
+	$("#return").click(function(){window.location='${NOTICE_LIST}';});
+	
+	$("#${lowCaseEntityName}Form").validate({
+			rules: {
+				content: {
+					required: true
+				}
+			},
+			errorPlacement:function(error, element){
+				error.appendTo(element.next("span").next("span"));
+			}
+		}
+	);
+});
+</script>
+</head>
+<body>
+	<div id="div_right_frame">
+		<div id="div_position_nav"><span>${translatorMap['translator0th']}</span>：GM工具&nbsp;&gt;&gt;&nbsp;游戏公告&nbsp;&gt;&gt;&nbsp;新增公告</div>
+		
+		<div class="div_edit">
+			<div class="content-box-header"></div>
+			
+			<form action="./${tMapperMetaData.tableName}_add.do" onsubmit="submitForm()" method="post" name="${lowCaseEntityName}Form" id="${lowCaseEntityName}Form">
+				<input type="hidden" name="action" value="submit">
+				<table class="tbl_edit">
+
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+	#if ( $c.beanPropertyName != "id" && $c.beanPropertyName != "createTime" ) 
+		<tr>	
+					<td class="td_edit_name"></td>
+					<td class="td_edit_value">
+							<input type="text" name="$c.beanPropertyName" id="$c.beanPropertyName" class="input_edit_value"/>
+							<span class="error">*</span>
+							<span class="error"><span class="error">${"validator.errors"["$c.beanPropertyName"] }</span></span>
+					</td>
+				</tr>
+	#end
+#end
+					<tr>
+						<td class="td_edit_name"></td>
+						<td class="td_edit_value">
+							<button type="submit" >提交</button>&nbsp;&nbsp;
+							<button type="button" id="return">返回</button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+	
+</body>
+</html>

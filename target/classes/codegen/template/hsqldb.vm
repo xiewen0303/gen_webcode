@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hsqldb>
+<tables>
+#foreach($table in $params)
+	<table tableName="${table.tMapperMetaData.tableName}">
+		<createSql>
+			<![CDATA[
+			CREATE TABLE ${table.tMapperMetaData.tableName}(
+#foreach($c in $table.tMapperMetaData.allCMapperMetaDatas)			
+			  ${c.column} #if(${c.sqlTypeName.contains('INT')}) INTEGER #else${c.sqlTypeName}#if(${c.columnSize} > 0)(${c.columnSize})#end#end,
+#end			  
+			  PRIMARY KEY (#foreach($c in $table.tMapperMetaData.primaryCMetaDatas)$c.column #end))
+			]]>
+		</createSql>
+		<indexSql>
+			
+		</indexSql>
+	</table>
+#end
+</tables>
+</hsqldb>

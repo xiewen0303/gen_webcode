@@ -1,0 +1,36 @@
+package ${basePackage}.vo.${modelName};
+
+import com.xl.base.vo.BaseVo;
+#set($temp = [])
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#if($temp.contains("$c.javaTypeName") == false && $StringUtil.contain("$c.javaTypeName","java.lang") == false)
+import $c.javaTypeName;
+#set($temp1 = $temp.add("$c.javaTypeName"))
+#end
+#end
+
+public class ${entityName}Vo extends BaseVo {
+
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+	private ${c.javaTypeSimpleName} ${c.beanPropertyName};
+	
+#end
+	private String ids;
+
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+	public $c.javaTypeSimpleName get$StringUtil.capitalize("$c.beanPropertyName")() {
+		return $c.beanPropertyName;
+	}
+
+	public void set$StringUtil.capitalize("$c.beanPropertyName")($c.javaTypeSimpleName $c.beanPropertyName) {
+		this.$c.beanPropertyName = $c.beanPropertyName;
+	}
+#end
+
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+}

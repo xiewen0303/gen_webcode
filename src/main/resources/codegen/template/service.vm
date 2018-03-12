@@ -1,0 +1,26 @@
+package ${basePackage}.service.${modelName};
+
+import com.xl.base.service.IServiceOperation;
+import ${basePackage}.entity.${modelName}.${entityName};
+import ${basePackage}.vo.${modelName}.${entityName}Vo;
+import com.xl.base.dao.common.PagingList;
+
+public interface I${entityName}Service extends IServiceOperation<${entityName}> {
+	
+	/**
+	  * 查询分页列表
+	 */
+	public PagingList<$entityName> select${entityName}List(${entityName}Vo $StringUtil.firstToLower($entityName)Vo);
+	
+	/**
+	  * 新增
+	 */
+	public boolean insert$entityName(${entityName}Vo $StringUtil.firstToLower($entityName)Vo);
+
+	/**
+	  * 修改
+	 */
+	public boolean update$entityName(${entityName}Vo $StringUtil.firstToLower($entityName)Vo);
+
+	
+}

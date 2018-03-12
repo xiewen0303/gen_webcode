@@ -1,0 +1,8 @@
+package ${basePackage}.dao.${modelName};
+
+import com.xl.base.dao.IDaoOperation;
+import ${basePackage}.entity.${modelName}.${entityName};
+
+public interface I${entityName}Dao extends IDaoOperation<${entityName}>  {
+
+}

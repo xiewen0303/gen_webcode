@@ -1,0 +1,102 @@
+package ${basePackage}.controller.${modelName};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.xl.base.dao.common.PagingList;
+import com.xl.base.web.controller.BaseController;
+import com.xl.bus.constants.user.ActionConstant;
+import ${basePackage}.entity.${modelName}.${entityName};
+import ${basePackage}.service.${modelName}.I${entityName}Service;
+import ${basePackage}.vo.${modelName}.${entityName}Vo;
+
+@Controller
+public class ${entityName}Controller extends BaseController {
+	#set ($lowCaseEntityName = $StringUtil.firstToLower($entityName) )
+@Autowired
+	private I${entityName}Service $StringUtil.firstToLower($entityName)Service;
+	
+	/**
+	 * 列表
+	 * @return
+	 */
+	@RequestMapping("${tMapperMetaData.tableName}_list.do")
+	public String list(${entityName}Vo ${lowCaseEntityName}Vo, ModelMap modelMap){
+		
+		PagingList<${entityName}> $StringUtil.firstToLower($entityName)List = ${lowCaseEntityName}Service.select${entityName}List(${lowCaseEntityName}Vo);
+
+		modelMap.put("${lowCaseEntityName}List", ${lowCaseEntityName}List);
+		modelMap.put("${lowCaseEntityName}Vo", ${lowCaseEntityName}Vo);
+		
+		return "${lowCaseEntityName}/list";
+	}
+
+	/**
+	 * 新增
+	 * @return
+	 */
+	@RequestMapping("${tMapperMetaData.tableName}_add.do")
+	public String add(${entityName}Vo ${lowCaseEntityName}Vo, ModelMap modelMap){
+		
+		if( !ActionConstant.SUBMIT.equals(${lowCaseEntityName}Vo.getAction()) ){
+			return "${lowCaseEntityName}/add";
+		}
+		
+		${lowCaseEntityName}Service.insert$entityName(${lowCaseEntityName}Vo);
+		
+		return "redirect:./${tMapperMetaData.tableName}_list.do";
+	}
+
+	/**
+	 * 修改
+	 * @return
+	 */
+	@RequestMapping("${tMapperMetaData.tableName}_update.do")
+	public String update(${entityName}Vo ${lowCaseEntityName}Vo, ModelMap modelMap){
+		
+		if( !ActionConstant.SUBMIT.equals(${lowCaseEntityName}Vo.getAction()) ){
+			
+			if( ${lowCaseEntityName}Vo.getId() != null ){
+				return "redirect:./${tMapperMetaData.tableName}_list.do";
+			}
+			
+			$entityName $lowCaseEntityName = ${lowCaseEntityName}Service.load(${lowCaseEntityName}Vo.getId());
+			if( $lowCaseEntityName == null ){
+				return "redirect:./${tMapperMetaData.tableName}_list.do";
+			}
+			
+			modelMap.put("$lowCaseEntityName", $lowCaseEntityName);
+			
+			return "${lowCaseEntityName}/update";
+		}
+		
+		${lowCaseEntityName}Service.update$entityName(${lowCaseEntityName}Vo);
+		
+		return "redirect:./${tMapperMetaData.tableName}_list.do";
+	}
+
+	/**
+	 * 详细
+	 * @return
+	 */
+	@RequestMapping("${lowCaseEntityName}_info.do")
+	public String info(${entityName}Vo ${lowCaseEntityName}Vo, ModelMap modelMap){
+		
+		$entityName $lowCaseEntityName = ${lowCaseEntityName}Service.load(${lowCaseEntityName}Vo.getId());
+		if( $lowCaseEntityName == null ){
+			return "redirect:./${lowCaseEntityName}_list.do";
+		}
+		
+		modelMap.put("$lowCaseEntityName", $lowCaseEntityName);
+		
+		return "${lowCaseEntityName}/info";
+	}
+	
+	
+	
+	
+	
+	
+}

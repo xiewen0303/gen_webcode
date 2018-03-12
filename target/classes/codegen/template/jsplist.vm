@@ -1,0 +1,66 @@
+<%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
+<%@ include file="/WEB-INF/jsp/include/includes.jsp"%>
+<html>
+<head>
+#set ($lowCaseEntityName = $StringUtil.firstToLower($entityName) )
+<script type="text/javascript" src="component/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<div id="div_right_frame">
+	<div id="div_position_nav"><span>${translatorMap['translator0th']}</span>：GM工具&nbsp;&gt;&gt;&nbsp;列表</div>
+	#set ($lowCaseEntityName = $StringUtil.firstToLower($entityName) )
+	<div class="div_search">
+		<form name="searchForm" method="get" action="./${tMapperMetaData.tableName}_list.do" >
+		<ul>
+			<li>创建时间:<input type="text" name="startTime" class="input_search" size="10" readonly="readonly" maxlength="20" value="${${lowCaseEntityName}Vo.startTime}" id="startDatePicker" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'endDatePicker\')}'})">
+				-&nbsp;<input type="text" name="endTime"   class="input_search" size="10" readonly="readonly" value="${${lowCaseEntityName}Vo.endTime}"   id="endDatePicker" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'startDatePicker\')}'})">&nbsp;&nbsp;</li>
+			<li><button type="submit">查询</button></li>
+		</ul>
+		</form>
+	</div>
+	
+	<div class="div_operate">
+		<ul>
+			<li class="li_operate" onclick="window.location='./${tMapperMetaData.tableName}_add.do'">新增</li>
+			<li class="show-msg" id="change-result" style="display:none;"></li>
+		</ul>
+	</div>
+	
+	<div class="div_list">
+	<table class="tbl_list">
+		<tr class="tr_list_title">
+			<td width="3%"><input id="checkallornot" name="checkallornot" type="checkbox"/></td>
+			#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+			#if ( $c.beanPropertyName != "id" ) <td width="10%"> ${lowCaseEntityName}Vo.$c.beanPropertyName</td> #end
+			
+			#end
+			
+			<td width="10%">操作</td>
+		</tr>
+		<c:choose>
+			<c:when test="${\not \empty ${lowCaseEntityName}List.records }">
+				<c:forEach items="${${lowCaseEntityName}List.records}" var="${lowCaseEntityName}" varStatus="status">
+				<tr id="recordTr${status.index}" class="tr_list_data">
+					<td class="center"><input type="checkbox" name="recordId" value="${${lowCaseEntityName}.id}" onclick="changeTrColorBySelect('${status.index}')"></td>
+					#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+					#if ( $c.beanPropertyName != "id" ) <td class="center"> ${${lowCaseEntityName}.$c.beanPropertyName}</td> #end
+					
+					#end
+					
+					<td class="center"> <a href="./${lowCaseEntityName}_info.do?id=${${lowCaseEntityName}.id}">详细信息</a></td>
+				</tr>
+				</c:forEach>
+				<tr class="tr_list_data"><td class="td_page_shift" colspan="2"><base:pageSplit url="./${tMapperMetaData.tableName}_list.do" count="${${lowCaseEntityName}List.totalRecordsCount}" pageNo="${${lowCaseEntityName}List.curPage}" pageSize="${${lowCaseEntityName}List.pagesize}"/></td></tr>
+			</c:when>
+			<c:otherwise>
+				<tr class="tr_list_data"><td class="td_page_shift" colspan="2"><font color="red">当前查询条件下无数据</font></td></tr>
+			</c:otherwise>
+		</c:choose>
+	</table>
+	</div>
+                                    
+	
+</div>
+</body>
+
+</html>

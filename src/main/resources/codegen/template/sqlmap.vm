@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap>
+	<resultMap id="$StringUtil.firstToLower($entityName)" class="${basePackage}.entity.${modelName}.${entityName}" >
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+		<result property="$c.beanPropertyName" column="$c.column"/>
+#end
+	</resultMap>
+	
+	<sql id="queryCondition${entityName}">
+		<dynamic prepend="where">
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+			<isNotNull prepend="and" property="${c.beanPropertyName}"> $c.column = #${c.beanPropertyName}# </isNotNull>
+#end		
+		</dynamic>
+	</sql>
+
+	<sql id="queryByKey${entityName}">
+#set($pCount = 0)
+#foreach($c in $tMapperMetaData.primaryCMetaDatas)
+#set($pCount = $pCount + 1)
+#if($pCount == 1)
+		where $c.column = #${c.beanPropertyName}#
+#elseif($pCount > 1)
+		and   $c.column = #${c.beanPropertyName}#
+#end
+#end
+	</sql>
+
+	<insert id="insert${entityName}" parameterClass="${basePackage}.entity.${modelName}.${entityName}">
+        insert into $tMapperMetaData.tableName (
+#set($cCount = 0)
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#set($cCount = $cCount + 1)
+<isNotNull prepend="#if($cCount > 1),#end" property="${c.beanPropertyName}"> #${c.beanPropertyName}# </isNotNull>
+#end
+)
+values(
+#set($cCount = 0)
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+    #set($cCount = $cCount + 1)
+    <isNotNull prepend="#if($cCount > 1),#end" property="${c.beanPropertyName}"> #${c.beanPropertyName}# </isNotNull>
+#end
+)
+	</insert>
+	
+	<delete id="delete${entityName}">
+		delete from $tMapperMetaData.tableName
+		<include refid="queryByKey${entityName}"/>
+	</delete>
+
+	<delete id="deleteBatch${entityName}">
+		delete from $tMapperMetaData.tableName where id in ($ids$)
+	</delete>
+	
+	<update id="update${entityName}" parameterClass="${basePackage}.entity.${modelName}.${entityName}">
+		update $tMapperMetaData.tableName 
+		<dynamic prepend="set">
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+			<isNotNull prepend="," property="${c.beanPropertyName}"> ${c.column} = #${c.beanPropertyName}# </isNotNull>
+#end
+		</dynamic>
+		<include refid="queryByKey${entityName}"/>
+	</update>
+	
+	<select id="selectSingle${entityName}" resultMap="$StringUtil.firstToLower($entityName)">
+		select 
+#set($cCount = 0)	
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#set($cCount = $cCount + 1)	
+		#if($cCount > 1),#end${c.column}
+#end
+		from $tMapperMetaData.tableName 
+		<include refid="queryByKey${entityName}"/>
+	</select>
+	
+	<select id="selectRecordsCount${entityName}" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from $tMapperMetaData.tableName
+		<include refid="queryCondition${entityName}"/>
+	</select>
+	
+	<select id="selectMultiPaging${entityName}" parameterClass="java.util.Map" resultMap="$StringUtil.firstToLower($entityName)">
+		select 
+#set($cCount = 0)	
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#set($cCount = $cCount + 1)	
+		#if($cCount > 1),#end${c.column}
+#end
+		from $tMapperMetaData.tableName
+		<include refid="queryCondition${entityName}"/>
+		limit #start#,#pagesize#
+	</select>
+
+	<select id="selectMulti${entityName}" parameterClass="java.util.Map" resultMap="$StringUtil.firstToLower($entityName)">
+		select 
+#set($cCount = 0)	
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#set($cCount = $cCount + 1)	
+		#if($cCount > 1),#end${c.column}
+#end
+		from $tMapperMetaData.tableName
+		<include refid="queryCondition${entityName}"/>
+	</select>
+	
+	<select id="selectAll${entityName}" resultMap="$StringUtil.firstToLower($entityName)">
+		select 
+#set($cCount = 0)	
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#set($cCount = $cCount + 1)	
+		#if($cCount > 1),#end${c.column}
+#end 
+		from $tMapperMetaData.tableName
+	</select>
+	
+	<select id="selectSingleByParams${entityName}" resultMap="$StringUtil.firstToLower($entityName)">
+		select 
+#set($cCount = 0)	
+#foreach($c in $tMapperMetaData.allCMapperMetaDatas)
+#set($cCount = $cCount + 1)	
+		#if($cCount > 1),#end${c.column}
+#end
+		from $tMapperMetaData.tableName 
+		<include refid="queryCondition${entityName}"/>
+	</select>	
+	
+	
+</sqlMap>
+	
